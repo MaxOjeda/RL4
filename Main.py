@@ -6,88 +6,64 @@ from Algoritmos import QLearning
 from Algoritmos import SarsaLambda
 from tqdm import tqdm
 
-def run_experiment(agent_class, num_runs=30, num_episodes=1000, report_interval=10, **agent_kwargs):
-    episode_lengths = np.zeros((num_runs, num_episodes))
+def experiment(agent_class, runs=30, episodios=1000, intervalo=10, **agent_kwargs):
+    ep_length = np.zeros((runs, episodios))
 
-    for run in tqdm(range(num_runs)):
+    for run in tqdm(range(runs)):
         env = gym.make("MountainCar-v0")
-        n_actions = env.action_space.n
+        n_action = env.action_space.n
 
-        agent = agent_class(n_actions, **agent_kwargs)
-        for episode in range(num_episodes):
+        agent = agent_class(n_action, **agent_kwargs)
+        for episode in range(episodios):
             observation, info = env.reset()
             action = agent.sample_action(observation)
-            terminated = truncated = False
+            done = truncado = False
             ep_length = 0
 
-            while not terminated and not truncated:
-                next_observation, reward, terminated, truncated, info = env.step(action)
+            while not done and not truncado:
+                next_observation, reward, done, truncado, info = env.step(action)
                 ep_length += 1
 
+                # Cabmiar dependiendo si son Sarsa o Q
                 if isinstance(agent, (Sarsa, SarsaLambda)):
                     next_action = agent.sample_action(next_observation)
-                    agent.learn(observation, action, reward, next_observation, next_action, terminated)
+                    agent.learn(observation, action, reward, next_observation, next_action, done)
                     observation, action = next_observation, next_action
                 elif isinstance(agent, QLearning):
-                    agent.learn(observation, action, reward, next_observation, terminated)
+                    agent.learn(observation, action, reward, next_observation, done)
                     observation = next_observation
                     action = agent.sample_action(observation)
-            episode_lengths[run, episode] = ep_length
+            ep_length[run, episode] = ep_length
 
         env.close()
 
-    # Compute average episode lengths over runs
-    avg_lengths = np.mean(episode_lengths, axis=0)
+    promedio_length = np.mean(ep_length, axis=0)
 
-    # Report average lengths every 'report_interval' episodes
+    # Mostrar resultados
     print(f"\Resultados {agent_class.__name__}:")
-    for i in range(0, num_episodes, report_interval):
-        avg_length = np.mean(avg_lengths[i:i+report_interval])
-        print(f"Espisodios {i+1}-{i+report_interval}: Average Length = {avg_length}")
+    for i in range(0, episodios, intervalo):
+        avg_length = np.mean(promedio_length[i:i+intervalo])
+        print(f"Espisodios {i+1}-{i+intervalo}: Average Length = {avg_length}")
 
-    return avg_lengths
+    return promedio_length
 
 if __name__ == "__main__":
-    num_runs = 30
-    num_episodes = 1000
-    report_interval = 10
+    runs = 30
+    episodios = 1000
+    intervalo = 10
 
-    # Parameters
+    # Parametros
     gamma = 1.0
     epsilon = 0.0
     alpha = 0.5 / 8
     lambd = 0.5
 
+    # Ejecutar cada experimento
     print("Sarsa...")
-    sarsa_lengths = run_experiment(
-        Sarsa,
-        num_runs,
-        num_episodes,
-        report_interval,
-        epsilon=epsilon,
-        alpha=alpha,
-        gamma=gamma,
-    )
+    sarsa_lengths = experiment(Sarsa, runs, episodios, intervalo, epsilon=epsilon, alpha=alpha, gamma=gamma)
 
     print("\nQ-Learning...")
-    qlearning_lengths = run_experiment(
-        QLearning,
-        num_runs,
-        num_episodes,
-        report_interval,
-        epsilon=epsilon,
-        alpha=alpha,
-        gamma=gamma,
-    )
+    qlearning_lengths = experiment(QLearning, runs, episodios, intervalo, epsilon=epsilon, alpha=alpha, gamma=gamma)
 
     print("\nSarsa(l)...")
-    sarsa_lambda_lengths = run_experiment(
-        SarsaLambda,
-        num_runs,
-        num_episodes,
-        report_interval,
-        epsilon=epsilon,
-        alpha=alpha,
-        gamma=gamma,
-        lambd=lambd,
-    )
+    sarsa_lambda_lengths = experiment(SarsaLambda, runs, episodios, intervalo, epsilon=epsilon, alpha=alpha, gamma=gamma, lambd=lambd)

@@ -131,12 +131,9 @@ class SarsaLambda:
         q_next = np.dot(self.__weights, x_next) if not done else 0.0
         delta = reward + self.__gamma * q_next - q_current
 
-        # Update eligibility traces
         self.__e_trace = self.__gamma * self.__lambda * self.__e_trace + x
 
-        # Update weights
         self.__weights += self.__alpha * delta * self.__e_trace
 
         if done:
-            # Reset eligibility traces at the end of each episode
             self.__e_trace = np.zeros(self.__num_features)
