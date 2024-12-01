@@ -33,13 +33,13 @@ def run_actor_critic(num_runs=30, num_episodes=1000, report_interval=10):
     avg_lengths = np.mean(episode_lengths, axis=0)
 
     # Report average lengths every 'report_interval' episodes
-    print(f"\nResults for ActorCritic:")
+    print(f"\Resultados Actor Critic:")
     for i in range(0, num_episodes, report_interval):
         avg_length = np.mean(avg_lengths[i:i+report_interval])
-        print(f"Episodes {i+1}-{i+report_interval}: Average Length = {avg_length}")
+        print(f"Episodios {i+1}-{i+report_interval}: Average Length = {avg_length}")
 
     return avg_lengths
 
 if __name__ == "__main__":
-    print("Running ActorCritic...")
+    print("Actor Critic...")
     run_actor_critic(num_runs=20)

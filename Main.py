@@ -7,7 +7,7 @@ from Algoritmos import SarsaLambda
 from tqdm import tqdm
 
 def experiment(agent_class, runs=30, episodios=1000, intervalo=10, **agent_kwargs):
-    ep_length = np.zeros((runs, episodios))
+    episodios_len = np.zeros((runs, episodios))
 
     for run in tqdm(range(runs)):
         env = gym.make("MountainCar-v0")
@@ -33,17 +33,17 @@ def experiment(agent_class, runs=30, episodios=1000, intervalo=10, **agent_kwarg
                     agent.learn(observation, action, reward, next_observation, done)
                     observation = next_observation
                     action = agent.sample_action(observation)
-            ep_length[run, episode] = ep_length
+            episodios_len[run, episode] = ep_length
 
         env.close()
 
-    promedio_length = np.mean(ep_length, axis=0)
+    promedio_length = np.mean(episodios_len, axis=0)
 
     # Mostrar resultados
     print(f"\Resultados {agent_class.__name__}:")
     for i in range(0, episodios, intervalo):
         avg_length = np.mean(promedio_length[i:i+intervalo])
-        print(f"Espisodios {i+1}-{i+intervalo}: Average Length = {avg_length}")
+        print(f"Espisodios {i+1}-{i+intervalo}: Average Length = {avg_length:.2f}")
 
     return promedio_length
 

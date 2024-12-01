@@ -25,7 +25,7 @@ def run_sac_parameter_search(num_configs=10, num_episodes=1000):
     results = []
 
     for idx, params in enumerate(parameter_configs):
-        print(f"\nRunning configuration {idx+1}/{len(parameter_configs)}: {params}")
+        print(f"Probando configuracion {idx+1}/{len(parameter_configs)}: {params}")
         env = gym.make("MountainCarContinuous-v0")
         monitor_dir = f"parameter_search_results/config_{idx}"
         os.makedirs(monitor_dir, exist_ok=True)
@@ -59,14 +59,14 @@ def run_sac_parameter_search(num_configs=10, num_episodes=1000):
         lengths = df['l'].values[:num_episodes]
         avg_length = np.mean(lengths)
         results.append({'config_idx': idx, 'params': params, 'avg_length': avg_length})
-        print(f"Average Episode Length: {avg_length}")
+        print(f"Largo Episodio Promedio: {avg_length}")
 
         env.close()
 
     # Sort results by average episode length (lower is better)
     results.sort(key=lambda x: x['avg_length'])
 
-    print("\nParameter Search Results:")
+    print("\nResultados búsqueda parametros:")
     for res in results:
         print(f"Config {res['config_idx']+1}: Avg Length = {res['avg_length']}, Params = {res['params']}")
 

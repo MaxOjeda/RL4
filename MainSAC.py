@@ -24,7 +24,7 @@ def run_sac(num_runs=30, num_episodes=1000):
             gamma=1.0,
             use_sde=True,
             train_freq=32,
-            verbose=0,
+            verbose=0
         )
         model.learn(total_timesteps=300000, progress_bar=True)
 
@@ -51,5 +51,5 @@ def run_sac(num_runs=30, num_episodes=1000):
 
 if __name__ == "__main__":
     # After running ActorCritic
-    print("\nRunning SAC...")
+    print("\nSAC...")
     run_sac()

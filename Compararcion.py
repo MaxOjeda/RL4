@@ -19,6 +19,7 @@ def run_comparison(best_params, num_runs=10, num_episodes=1000):
     for config_name, params in configs.items():
         print(f"\nRunning {config_name} Configuration")
         episode_lengths = []
+        #episode_lengths = np.zeros((num_runs, num_episodes))
 
         for run in tqdm(range(num_runs)):
             env = gym.make("MountainCarContinuous-v0")
@@ -53,6 +54,7 @@ def run_comparison(best_params, num_runs=10, num_episodes=1000):
             df = pd.read_csv(monitor_file, comment='#')
             lengths = df['l'].values[:num_episodes]
             episode_lengths.append(lengths)
+            #episode_lengths[run, epi]
 
             env.close()
 
@@ -61,10 +63,10 @@ def run_comparison(best_params, num_runs=10, num_episodes=1000):
         avg_lengths = np.mean(episode_lengths, axis=0)
 
         # Report average lengths every 10 episodes
-        print(f"\nResults for {config_name} Configuration:")
+        print(f"\Resultados {config_name}:")
         for i in range(0, num_episodes, 10):
             avg_length = np.mean(avg_lengths[:, i:i+10])
-            print(f"Episodes {i+1}-{i+10}: Average Length = {avg_length}")
+            print(f"Episodios {i+1}-{i+10}: Average Length = {avg_length:.2f}")
 
 if __name__ == "__main__":
     # Assuming best_params is obtained from the parameter search
