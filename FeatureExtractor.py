@@ -41,8 +41,8 @@ class FeatureExtractorSAC:
 
     def get_features(self, observation):
         position, velocity = observation
-        position_scale = self.num_tiles / (0.6)  # position ranges from -1.2 to 0.6
-        velocity_scale = self.num_tiles / (0.14)  # velocity ranges from -0.07 to 0.07
+        position_scale = self.num_tiles / (0.6)  
+        velocity_scale = self.num_tiles / (0.14) 
 
         scaled_observation = [position * position_scale, velocity * velocity_scale]
         active_tiles = tiles(self.iht, self.num_tilings, scaled_observation)
